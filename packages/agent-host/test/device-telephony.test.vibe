@@ -591,6 +591,13 @@ it.effect(`A written number is read as its one dial form: one digit may follow a
   }))
 })
 
+it.effect(`A compact run of more than 15 digits is not a dial form (${telephony}, "A proposed number is the owner's own, written or spoken in this message and not only inside the text to send")`, effect () => {
+  try Effect.try(() => assert.deepStrictEqual(
+    ["123456789012345", "1234567890123456", "12345678901234567890", "+1234567890123456"].map((written) => [written, phoneDialNumber(written)]),
+    [["123456789012345", "123456789012345"], ["1234567890123456", undefined], ["12345678901234567890", undefined], ["+1234567890123456", undefined]],
+  ))
+})
+
 it.effect(`A text keeps the recipient's name when the words to send are inside it (${telephony}, "A proposed contact name is one the owner wrote as whole words, outside the text to send")`, effect () => {
   const named = (query: string, body: string) => ({ type: "sms_compose", target: { kind: "contact", query }, body }) as DeviceOperation
   const requests: ReadonlyArray<readonly [string, string, string]> = [
